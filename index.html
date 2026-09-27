@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>시그널 드라이브</title>
+<meta name="description" content="딱 30분, 나란히 앉아 달리는 드라이브 소개팅. 둘 다 원할 때만 연결됩니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme: dark;
+  --ink:#0B0F14; --surface:#151C24; --surface-2:#1D2630; --line:#28323D;
+  --text:#EEE8DE; --muted:#A7A195; --dim:#6B7380;
+  --amber:#F2A541; --amber-ink:#1A1206; --tail:#E0564A;
+  --display:'Black Han Sans','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  --serif:'Gowun Batang','Nanum Myeongjo','AppleMyungjo',serif;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  --gutter:clamp(20px,6vw,120px);
+  --maxw:1200px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:var(--amber)}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:6px}
+.wrap{width:100%;max-width:calc(var(--maxw) + var(--gutter)*2);margin-inline:auto;padding-inline:var(--gutter)}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.18em;color:var(--amber);text-transform:uppercase}
+h1,h2,h3{margin:0;text-wrap:balance}
+h2.sec{font-family:var(--serif);font-weight:700;font-size:clamp(30px,4.2vw,52px);line-height:1.3;letter-spacing:-.01em}
+p{margin:0}
+.lead{font-size:clamp(16px,1.4vw,19px);color:var(--muted);max-width:34em}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:58px;padding:0 32px;border-radius:29px;font-size:17px;font-weight:600;text-decoration:none;border:0;cursor:pointer;font-family:var(--sans);transition:transform .25s,background .25s}
+.btn-primary{background:var(--amber);color:var(--amber-ink)}
+.btn-primary:hover{background:#FFB95C;transform:translateY(-2px)}
+.btn-ghost{border:1px solid #4A5563;color:var(--text);background:rgba(11,15,20,.4)}
+.btn-ghost:hover{border-color:var(--text)}
+
+/* NAV */
+.nav{position:fixed;left:0;right:0;top:0;z-index:50;padding-top:env(safe-area-inset-top,0px);transition:background .35s,border-color .35s;border-bottom:1px solid transparent}
+.nav.solid{background:rgba(11,15,20,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:var(--line)}
+.nav .wrap{height:76px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none;font-family:var(--display);font-size:24px;letter-spacing:.02em;white-space:nowrap}
+.logo svg{flex-shrink:0}
+.nav-links{display:flex;align-items:center;gap:36px}
+.nav-links a{color:#C9C3B8;text-decoration:none;font-size:15px;padding:10px 0}
+.nav-links a:hover{color:var(--text)}
+.nav-links .btn{height:44px;padding:0 22px;font-size:15px;color:var(--amber-ink)}
+@media (max-width:860px){.nav-links a:not(.btn){display:none}}
+
+/* HERO */
+.hero{position:relative;min-height:min(100svh,940px);display:flex;align-items:flex-end;overflow:hidden}
+.hero-bg{position:absolute;inset:-4% 0 0 0;will-change:transform}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:50% 40%;opacity:.85}
+.hero::after{content:"";position:absolute;inset:0;background:
+  linear-gradient(90deg,rgba(11,15,20,.9) 0%,rgba(11,15,20,.55) 50%,rgba(11,15,20,.1) 100%),
+  linear-gradient(180deg,rgba(11,15,20,.55) 0%,rgba(11,15,20,0) 22%,rgba(11,15,20,0) 62%,var(--ink) 100%)}
+.hero-content{position:relative;z-index:2;padding-block:140px 110px;display:flex;flex-direction:column;gap:26px;will-change:transform,opacity}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{padding:7px 16px;border-radius:20px;border:1px solid #3A444F;background:rgba(11,15,20,.55);font-size:14px;color:#D2CCC1}
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(84px,13vw,184px);line-height:1;letter-spacing:-.02em}
+.hero h1 .ch{display:inline-block;animation:rise 1s cubic-bezier(.2,.7,.2,1) both}
+.hero h1 .amber{color:var(--amber)}
+@keyframes rise{from{opacity:0;transform:translateY(.35em);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+.hero .tag{font-family:var(--serif);font-weight:700;font-size:clamp(22px,2.4vw,32px);line-height:1.45}
+.hero .fade-in{animation:rise 1.1s .7s cubic-bezier(.2,.7,.2,1) both}
+.hero .actions{display:flex;flex-wrap:wrap;gap:12px;padding-top:6px}
+.scroll-hint{position:absolute;z-index:2;left:50%;bottom:28px;transform:translateX(-50%);font-size:12px;letter-spacing:.3em;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:10px}
+.scroll-hint i{width:1px;height:38px;background:linear-gradient(var(--muted),transparent);animation:drip 2s infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@media (max-width:760px){.scroll-hint{display:none}}
+
+/* REVEAL */
+[data-reveal]{transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1),filter 1s}
+[data-reveal].pre{opacity:0;transform:translateY(48px);filter:blur(6px)}
+[data-reveal][data-delay="1"]{transition-delay:.12s}
+[data-reveal][data-delay="2"]{transition-delay:.24s}
+[data-reveal][data-delay="3"]{transition-delay:.36s}
+[data-reveal][data-delay="4"]{transition-delay:.48s}
+
+/* WORD REVEAL (pinned) */
+.pin{position:relative}
+.pin-stage{position:sticky;top:0;height:100svh;display:flex;align-items:center}
+.words{height:260vh}
+.words p{font-family:var(--serif);font-weight:700;font-size:clamp(28px,4.4vw,60px);line-height:1.45;letter-spacing:-.01em;max-width:18em}
+.words .w{color:var(--dim);transition:color .35s}
+.words .w.lit{color:var(--text)}
+.words .w.hl.lit{color:var(--amber)}
+
+/* COMPARE */
+.section{padding-block:clamp(96px,14vw,180px)}
+.sec-head{display:flex;flex-direction:column;gap:16px;margin-bottom:clamp(40px,5vw,64px)}
+.compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media (max-width:760px){.compare{grid-template-columns:1fr}}
+.cmp{padding:clamp(28px,4vw,52px);border-radius:28px;display:flex;flex-direction:column;gap:22px}
+.cmp.old{border:1px solid var(--line)}
+.cmp.new{background:var(--surface);border:1.5px solid var(--amber)}
+.cmp .label{font-size:16px;color:var(--muted)}
+.cmp.new .label{color:var(--amber);font-weight:600}
+.cmp .big{font-family:var(--display);font-size:clamp(64px,8vw,112px);line-height:1;position:relative;display:inline-block;align-self:flex-start}
+.cmp.old .big{color:#5C6672}
+.cmp.old .big::after{content:"";position:absolute;left:-4%;top:52%;height:6px;width:108%;background:var(--tail);border-radius:3px;transform:scaleX(0);transform-origin:left;transition:transform 1s .6s cubic-bezier(.7,0,.2,1)}
+.cmp.old.in .big::after{transform:scaleX(1)}
+.cmp.new .big{color:var(--amber)}
+.cmp ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:17px;line-height:1.55}
+.cmp.old ul{color:var(--muted)}
+
+/* VAN EXPAND */
+.van{height:220vh}
+.van .pin-stage{justify-content:center}
+.van-frame{position:relative;width:100%;height:100svh;overflow:hidden;clip-path:inset(14% 12% 14% 12% round 32px);will-change:clip-path}
+.van-frame img{width:100%;height:100%;object-fit:cover;transform:scale(1.15);will-change:transform}
+.van-frame::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,15,20,.1) 40%,rgba(11,15,20,.88) 100%)}
+.van-cap{position:absolute;z-index:2;left:var(--gutter);right:var(--gutter);bottom:clamp(40px,8vh,90px);display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateY(24px)}
+.van-cap h2{font-family:var(--serif);font-weight:700;font-size:clamp(30px,4.4vw,60px);line-height:1.3;color:#fff}
+.van-cap p{font-size:clamp(16px,1.4vw,19px);color:#DCD6CC}
+
+/* AI */
+.ai{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(40px,6vw,88px);align-items:center}
+@media (max-width:900px){.ai{grid-template-columns:1fr}}
+.ai ol{margin:8px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px;counter-reset:s}
+.ai li{display:flex;gap:16px;align-items:center;font-size:17px;counter-increment:s}
+.ai li::before{content:counter(s);width:36px;height:36px;border-radius:50%;border:1.5px solid var(--amber);color:var(--amber);display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;font-size:15px}
+.quiz{padding:clamp(24px,3.4vw,40px);border-radius:28px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:24px}
+.quiz-top{display:flex;justify-content:space-between;font-size:15px}
+.quiz-top span:last-child{color:var(--muted);font-variant-numeric:tabular-nums}
+.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:35%;background:var(--amber);border-radius:3px;transform:scaleX(.2);transform-origin:left;transition:transform 1.4s .4s cubic-bezier(.2,.7,.2,1)}
+.quiz.in .bar i{transform:scaleX(1)}
+.quiz .q{font-family:var(--serif);font-weight:700;font-size:clamp(22px,2.2vw,28px);line-height:1.4}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{padding:17px 22px;border-radius:14px;border:1px solid #333C46;font-size:17px;display:flex;justify-content:space-between;gap:12px;transition:border-color .5s 1.2s,background .5s 1.2s}
+.opt em{font-style:normal;color:var(--amber);font-size:15px;opacity:0;transition:opacity .5s 1.3s}
+.quiz.in .opt.pick{border-color:var(--amber);background:var(--surface-2)}
+.quiz.in .opt.pick em{opacity:1}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tags span{padding:7px 14px;border-radius:16px;background:var(--surface-2);font-size:14px;color:#C9C3B8}
+
+/* ROAD STEPS */
+.road{height:300vh}
+.road .pin-stage{flex-direction:column;justify-content:center;align-items:stretch}
+.road-track{position:relative;height:60px;margin:48px 0 40px}
+.road-line{position:absolute;left:0;right:0;top:50%;height:2px;background:repeating-linear-gradient(90deg,var(--line) 0 18px,transparent 18px 30px)}
+.road-fill{position:absolute;left:0;top:50%;height:2px;width:0;background:var(--amber);box-shadow:0 0 12px rgba(242,165,65,.6)}
+.car{position:absolute;top:50%;left:0;transform:translate(-50%,-50%);width:54px;height:30px}
+.stops{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.stop{padding:26px 22px;border-radius:22px;border:1px solid var(--line);display:flex;flex-direction:column;gap:12px;transition:border-color .4s,background .4s,opacity .4s;opacity:.45}
+.stop .n{font-family:var(--display);font-size:40px;line-height:1;color:#3E4955;transition:color .4s}
+.stop h3{font-size:18px;font-weight:600;line-height:1.4}
+.stop p{font-size:15px;line-height:1.6;color:var(--muted)}
+.stop.on{opacity:1}
+.stop.cur{background:var(--surface);border-color:var(--amber)}
+.stop.on .n{color:var(--amber)}
+@media (max-width:900px){
+  .road{height:auto}
+  .road .pin-stage{position:static;height:auto;padding-block:clamp(96px,14vw,180px)}
+  .road-track{display:none}
+  .stops{grid-template-columns:1fr}
+  .stop{opacity:1}
+}
+
+/* SIGNAL MATRIX */
+.duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media (max-width:900px){.duo{grid-template-columns:1fr}}
+.panel{padding:clamp(28px,4vw,48px);border-radius:28px;background:var(--surface);display:flex;flex-direction:column;gap:26px}
+.panel h2{font-family:var(--serif);font-weight:700;font-size:clamp(26px,2.8vw,36px);line-height:1.4}
+.matrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cell{padding:20px;border-radius:16px;background:var(--surface-2);display:flex;flex-direction:column;gap:4px;transition:transform .7s cubic-bezier(.2,.7,.2,1),opacity .7s}
+.cell b{font-size:17px;font-weight:600;color:#C9C3B8}
+.cell span{font-size:15px;color:var(--muted)}
+.cell.yes{background:var(--amber)}
+.cell.yes b,.cell.yes span{color:var(--amber-ink)}
+.panel.pre .cell{opacity:0;transform:rotateX(70deg)}
+.panel .cell:nth-child(2){transition-delay:.15s}.panel .cell:nth-child(3){transition-delay:.3s}.panel .cell:nth-child(4){transition-delay:.45s}
+.note{font-size:16px;line-height:1.65;color:var(--muted)}
+.modes{display:flex;flex-direction:column;gap:10px}
+.mode{padding:18px 22px;border-radius:16px;background:var(--surface-2);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.mode b{font-size:17px;font-weight:600}
+.mode span{font-size:15px;color:var(--muted)}
+.mode.def{border:1.5px solid var(--amber)}
+.mode.def span{color:var(--amber)}
+
+/* SAFETY */
+.safety{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(24px,3vw,40px)}
+@media (max-width:1000px){.safety{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.safety{grid-template-columns:1fr}}
+.safe{display:flex;flex-direction:column;gap:12px;padding-top:24px;border-top:1px solid var(--line)}
+.safe h3{font-size:19px;font-weight:600}
+.safe p{font-size:16px;line-height:1.65;color:var(--muted)}
+
+/* APPLY */
+.apply{padding:clamp(32px,5vw,72px);border-radius:36px;background:var(--surface);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(36px,5vw,72px)}
+@media (max-width:900px){.apply{grid-template-columns:1fr}}
+.apply h2{font-family:var(--display);font-weight:400;font-size:clamp(52px,6vw,84px);line-height:1.08}
+.apply .pts{display:flex;flex-direction:column;gap:8px;font-size:16px;color:#C9C3B8}
+form{display:flex;flex-direction:column;gap:18px;margin:0}
+.row{display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.row.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:560px){.row,.row.three{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:8px;min-width:0}
+.field label{font-size:14px;font-weight:500;color:#C9C3B8}
+.field input,.field select{height:54px;padding:0 16px;border-radius:12px;border:1px solid #333C46;background:var(--ink);color:var(--text);font-size:16px;font-family:var(--sans);width:100%}
+.field input:focus,.field select:focus{outline:none;border-color:var(--amber)}
+.agree{display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.5;color:var(--muted)}
+.agree input{width:22px;height:22px;margin:0;accent-color:var(--amber);flex-shrink:0}
+.err{font-size:14px;color:#FF8A7E}
+.done{padding:28px;border-radius:20px;border:1.5px solid var(--amber);display:flex;flex-direction:column;gap:8px}
+.done b{font-size:20px}
+.done p{color:var(--muted)}
+
+/* FAQ */
+.faq{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:clamp(32px,6vw,72px)}
+@media (max-width:900px){.faq{grid-template-columns:1fr}}
+details{border-top:1px solid var(--line);padding:24px 0}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{font-size:19px;font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--amber);font-size:24px;line-height:1;transition:transform .3s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{padding-top:12px;font-size:16px;color:var(--muted)}
+
+footer{border-top:1px solid var(--line);padding-block:44px 56px;margin-top:clamp(96px,12vw,160px)}
+footer .wrap{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+footer small{font-size:14px;color:var(--muted);line-height:1.7}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .words,.van{height:auto}
+  .pin-stage{position:static;height:auto;padding-block:120px}
+  .words .w{color:var(--text)}
+  .van-frame{clip-path:none;height:70vh}
+  .van-cap{opacity:1;transform:none}
+  .road{height:auto}.road .pin-stage{position:static}.stop{opacity:1}
+  .cmp.old .big::after{transform:scaleX(1)}
+}
+</style>
+</head>
+<body>
+
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="시그널 드라이브 홈">
+      <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="#F2A541" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="16" cy="20" r="2.4" fill="#F2A541" stroke="none"/><path d="M10.5 14.5a8 8 0 0 1 11 0"/><path d="M6.5 10.5a13.5 13.5 0 0 1 19 0"/></svg>
+      시그널 드라이브
+    </a>
+    <nav class="nav-links" aria-label="주요 메뉴">
+      <a href="#how">진행 방식</a>
+      <a href="#ai">AI 매칭</a>
+      <a href="#safety">안전</a>
+      <a href="#faq">자주 묻는 질문</a>
+      <a class="btn btn-primary" href="#apply">신청하기</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" id="hero">
+    <div class="hero-bg" id="heroBg"><img src="night-city.jpg" alt="" fetchpriority="high"></div>
+    <div class="wrap hero-content" id="heroContent">
+      <div class="chips fade-in"><span class="chip">전국 어디서나</span><span class="chip">누구나 신청 가능</span></div>
+      <h1 aria-label="딱, 30분."><span class="ch" style="animation-delay:.05s">딱</span><span class="ch" style="animation-delay:.12s">,</span>&nbsp;<span class="amber"><span class="ch" style="animation-delay:.24s">3</span><span class="ch" style="animation-delay:.32s">0</span><span class="ch" style="animation-delay:.40s">분</span></span><span class="ch" style="animation-delay:.48s">.</span></h1>
+      <p class="tag fade-in">나란히 앉아 달리는 30분의 소개팅.</p>
+      <p class="lead fade-in">부담은 줄이고 설렘만 남겼어요. 둘 다 다시 만나고 싶을 때만 연락처가 연결됩니다.</p>
+      <div class="actions fade-in">
+        <a class="btn btn-primary" href="#apply">지금 신청하기</a>
+        <a class="btn btn-ghost" href="#how">어떻게 진행되나요</a>
+      </div>
+    </div>
+    <div class="scroll-hint" aria-hidden="true">SCROLL<i></i></div>
+  </section>
+
+  <section class="pin words" id="words" aria-label="소개">
+    <div class="pin-stage">
+      <div class="wrap">
+        <p id="wordText">소개팅은 보통 두세 시간씩 이어지죠. 시그널 드라이브는 <span class="hl">딱 30분.</span> 마주 보지 않고 나란히 앉아, 같은 창밖을 보며 이야기해요.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="sec-head" data-reveal>
+        <span class="eyebrow">No pressure</span>
+        <h2 class="sec">소개팅, 꼭 두세 시간씩<br>앉아 있어야 했나요?</h2>
+      </div>
+      <div class="compare">
+        <div class="cmp old" data-reveal>
+          <span class="label">보통의 소개팅</span>
+          <span class="big">2~3시간</span>
+          <ul><li>카페에서 한 시간, 식사에 또 한 시간</li><li>마음이 안 맞아도 예의상 자리 지키기</li><li>2차는 가야 하나, 핑계는 뭐라고 하나</li></ul>
+        </div>
+        <div class="cmp new" data-reveal data-delay="2">
+          <span class="label">시그널 드라이브</span>
+          <span class="big">30분</span>
+          <ul><li>끝나는 시간이 처음부터 정해져 있어요</li><li>마주 보지 않고, 같은 창밖을 보며 대화해요</li><li>연락처는 둘 다 원할 때만 연결돼요</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pin van" id="van" aria-label="차량">
+    <div class="pin-stage">
+      <div class="van-frame" id="vanFrame">
+        <img src="van.jpg" alt="소개팅에 쓰이는 대형 승합차" id="vanImg" loading="lazy">
+      </div>
+      <div class="van-cap" id="vanCap">
+        <span class="eyebrow">The car</span>
+        <h2>넓은 뒷좌석, 둘만의 30분</h2>
+        <p>대형 승합차 뒷좌석에 나란히 앉아 창밖을 보며 이야기해요.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="ai">
+    <div class="wrap ai">
+      <div class="sec-head" data-reveal style="margin:0">
+        <span class="eyebrow">AI matching</span>
+        <h2 class="sec">사전 질문지로 알아보고,<br>AI가 짝을 찾아요</h2>
+        <p class="lead">신청할 때 취향과 이상형, 연애 스타일에 관한 질문에 답해 주세요. AI가 답변을 분석해 대화가 잘 통할 만한 분을 골라 같은 차에 태워 드려요.</p>
+        <ol>
+          <li>사전 질문지 작성: 취향, 이상형, 생활 패턴</li>
+          <li>AI가 서로 잘 맞을 상대를 추천</li>
+          <li>만남 결과까지 반영해 다음 매칭은 더 정확하게</li>
+        </ol>
+      </div>
+      <div class="quiz" data-reveal data-delay="2">
+        <div class="quiz-top"><span>사전 질문지</span><span>7 / 20</span></div>
+        <div class="bar"><i></i></div>
+        <p class="q">여행을 간다면, 나는?</p>
+        <div class="opts">
+          <div class="opt">시간 단위로 일정을 짜는 계획형</div>
+          <div class="opt pick"><span>숙소만 잡고 떠나는 즉흥형</span><em>선택됨</em></div>
+          <div class="opt">그때그때 상대에게 맞추는 편</div>
+        </div>
+        <div class="tags"><span>#이상형</span><span>#주말 보내는 법</span><span>#연락 스타일</span><span>#음식 취향</span><span>#집 데이트 vs 외출</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pin road" id="how">
+    <div class="pin-stage">
+      <div class="wrap">
+        <div class="sec-head" style="margin-bottom:0">
+          <span class="eyebrow">How it works</span>
+          <h2 class="sec">탑승부터 연결까지</h2>
+        </div>
+        <div class="road-track" aria-hidden="true">
+          <div class="road-line"></div>
+          <div class="road-fill" id="roadFill"></div>
+          <svg class="car" id="car" viewBox="0 0 54 30" fill="none"><path d="M4 22 L7 12 Q9 8 15 8 L38 8 Q44 8 48 14 L51 18 Q52 20 52 22 L52 24 L4 24 Z" fill="#F2A541"/><path d="M13 12 L16 10 L25 10 L25 15 L11 15 Z M28 10 L37 10 Q41 10 43 15 L28 15 Z" fill="#1A1206"/><circle cx="14" cy="24" r="4" fill="#0B0F14" stroke="#F2A541" stroke-width="2"/><circle cx="41" cy="24" r="4" fill="#0B0F14" stroke="#F2A541" stroke-width="2"/><rect x="50" y="17" width="4" height="3" rx="1" fill="#FFF3D6"/></svg>
+        </div>
+        <div class="stops" id="stops">
+          <div class="stop"><span class="n">01</span><h3>신청 &amp; 질문지</h3><p>본인 인증 후 사전 질문지에 답해요.</p></div>
+          <div class="stop"><span class="n">02</span><h3>각자 탑승</h3><p>역, 카페처럼 공개된 장소에서 한 명씩 태워요.</p></div>
+          <div class="stop"><span class="n">03</span><h3>30분 드라이브</h3><p>뒷좌석에 나란히 앉아 정해진 코스를 달려요.</p></div>
+          <div class="stop"><span class="n">04</span><h3>각자 하차</h3><p>상대 앞에서는 결과를 묻지 않아요.</p></div>
+          <div class="stop"><span class="n">05</span><h3>둘 다 YES면 연결</h3><p>따로 의사를 묻고, 서로 원할 때만 연락처를 전해요.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap duo">
+      <div class="panel" data-reveal>
+        <span class="eyebrow">Mutual signal</span>
+        <h2>누가 거절했는지는<br>아무도 몰라요</h2>
+        <div class="matrix">
+          <div class="cell yes"><b>YES · YES</b><span>연락처 전달</span></div>
+          <div class="cell"><b>YES · NO</b><span>전달하지 않음</span></div>
+          <div class="cell"><b>NO · YES</b><span>전달하지 않음</span></div>
+          <div class="cell"><b>NO · NO</b><span>전달하지 않음</span></div>
+        </div>
+        <p class="note">연결되지 않으면 이렇게만 안내해요. “이번 만남은 상호 연락처 교환으로 이어지지 않았습니다.”</p>
+      </div>
+      <div class="panel" data-reveal data-delay="2">
+        <span class="eyebrow">Driver</span>
+        <h2>기사는 조용히,<br>필요할 때만 한마디</h2>
+        <div class="modes">
+          <div class="mode"><b>자유 대화형</b><span>운전에만 집중</span></div>
+          <div class="mode def"><b>가벼운 진행형</b><span>대화가 끊기면 질문 하나</span></div>
+          <div class="mode"><b>적극 진행형</b><span>대화 주제를 이끌어 줘요</span></div>
+        </div>
+        <p class="note">원하는 진행 방식은 신청할 때 골라 주세요.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="safety" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head" data-reveal>
+        <span class="eyebrow">Safety &amp; privacy</span>
+        <h2 class="sec">안심하고 탈 수 있도록</h2>
+      </div>
+      <div class="safety">
+        <div class="safe" data-reveal><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F2A541" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><h3>언제든 중단</h3><p>불편하면 말씀만 하세요. 이유를 묻지 않고 안전한 곳에 세워 드려요.</p></div>
+        <div class="safe" data-reveal data-delay="1"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F2A541" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><h3>공개된 장소에서 승하차</h3><p>상대방은 내 집 주소도, 연락처도 알 수 없어요.</p></div>
+        <div class="safe" data-reveal data-delay="2"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F2A541" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M4 4l16 16"/></svg><h3>녹음하지 않는 뒷좌석</h3><p>운전석과 공간을 나누고, 잔잔한 음악으로 대화를 지켜요.</p></div>
+        <div class="safe" data-reveal data-delay="3"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F2A541" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9.5" cy="11" r="2"/><path d="M6.5 16c.6-1.5 1.7-2.2 3-2.2s2.4.7 3 2.2M15 10h3M15 13h3"/></svg><h3>본인 인증 회원만</h3><p>휴대폰 본인 인증을 마친 분들끼리만 매칭해요.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="apply">
+    <div class="wrap">
+      <div class="apply" data-reveal>
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <h2>누구나,<br>어디서나.</h2>
+          <p class="lead">전국 어디서든 신청할 수 있어요. 신청서와 사전 질문지를 보내 주시면, 잘 맞는 분이 생기는 대로 일정을 안내해 드릴게요.</p>
+          <div class="pts"><span>· 신청은 무료, 매칭이 확정된 뒤 결제</span><span>· 참가비 1회 [가격]원</span></div>
+        </div>
+        <div>
+          <form id="applyForm" novalidate>
+            <div class="row">
+              <div class="field"><label for="f-name">이름</label><input id="f-name" name="name" type="text" autocomplete="name" placeholder="홍길동" required></div>
+              <div class="field"><label for="f-phone">휴대폰 번호</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="010-0000-0000" required></div>
+            </div>
+            <div class="row three">
+              <div class="field"><label for="f-age">나이</label><input id="f-age" name="age" type="number" inputmode="numeric" min="19" max="60" placeholder="29" required></div>
+              <div class="field"><label for="f-gender">성별</label><select id="f-gender" name="gender" required><option value="">선택</option><option>남성</option><option>여성</option></select></div>
+              <div class="field"><label for="f-region">지역</label><select id="f-region" name="region" required><option value="">시/도 선택</option><option>서울</option><option>경기·인천</option><option>대구·경북</option><option>부산·울산·경남</option><option>대전·충청</option><option>광주·전라</option><option>강원·제주</option></select></div>
+            </div>
+            <div class="field"><label for="f-ideal">이상형을 한 줄로 알려 주세요</label><input id="f-ideal" name="ideal" type="text" placeholder="예: 대화가 잘 통하고 잘 웃는 사람"></div>
+            <label class="agree" for="f-agree"><input id="f-agree" name="agree" type="checkbox" required>개인정보 수집·이용에 동의합니다. 신청 정보는 매칭과 안내 목적으로만 사용돼요.</label>
+            <p class="err" id="formErr" hidden>이름, 휴대폰 번호, 나이, 성별, 지역을 모두 입력하고 개인정보 수집에 동의해 주세요.</p>
+            <button class="btn btn-primary" type="submit">신청하고 사전 질문지 작성하기</button>
+          </form>
+          <div class="done" id="formDone" hidden>
+            <b>신청이 접수됐어요</b>
+            <p>곧 사전 질문지 링크를 문자로 보내 드릴게요.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq" style="padding-bottom:0">
+    <div class="wrap faq">
+      <h2 class="sec" data-reveal>자주 묻는<br>질문</h2>
+      <div data-reveal data-delay="1">
+        <details><summary>어떤 차를 타나요?</summary><p>뒷좌석이 넓은 카니발 같은 대형 승합차로 운행해요.</p></details>
+        <details><summary>상대가 마음에 안 들면요?</summary><p>내린 뒤 NO를 고르면 끝이에요. 누가 선택하지 않았는지는 상대에게 알리지 않아요.</p></details>
+        <details><summary>전체 소요 시간은요?</summary><p>대화는 30분이고, 탑승과 하차 이동 시간이 조금 더해져요.</p></details>
+        <details><summary>사전 질문지는 꼭 써야 하나요?</summary><p>네. 질문지 답변을 바탕으로 AI가 상대를 추천하기 때문에, 자세히 쓸수록 매칭이 잘 맞아요.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span class="logo" style="font-size:22px">시그널 드라이브</span>
+      <small>문의 [이메일 또는 카카오톡 채널] · 사업자 정보 [등록 후 기재]</small>
+    </div>
+    <small>© 시그널 드라이브</small>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var nav = document.getElementById('nav');
+
+  // Split the pinned sentence into words
+  var wt = document.getElementById('wordText');
+  function splitWords(node){
+    Array.prototype.slice.call(node.childNodes).forEach(function(c){
+      if(c.nodeType===3){
+        var frag=document.createDocumentFragment();
+        c.textContent.split(/(\s+)/).forEach(function(part){
+          if(!part) return;
+          if(/^\s+$/.test(part)){frag.appendChild(document.createTextNode(part));return;}
+          var s=document.createElement('span');s.className='w'+(node.classList&&node.classList.contains('hl')?' hl':'');s.textContent=part;frag.appendChild(s);
+        });
+        c.parentNode.replaceChild(frag,c);
+      } else if(c.nodeType===1){ splitWords(c); }
+    });
+  }
+  splitWords(wt);
+  var words = wt.querySelectorAll('.w');
+
+  // Reveal on scroll
+  var revealEls = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
+  if(!reduce && 'IntersectionObserver' in window){
+    var vh = window.innerHeight;
+    revealEls.forEach(function(el){
+      if(el.getBoundingClientRect().top > vh*0.92) el.classList.add('pre'); else el.classList.add('in');
+    });
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.remove('pre'); e.target.classList.add('in'); io.unobserve(e.target);} });
+    },{threshold:0.12, rootMargin:'0px 0px -6% 0px'});
+    revealEls.forEach(function(el){ if(el.classList.contains('pre')) io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  var heroBg=document.getElementById('heroBg'), heroC=document.getElementById('heroContent'), hero=document.getElementById('hero');
+  var wordsSec=document.getElementById('words');
+  var vanSec=document.getElementById('van'), vanFrame=document.getElementById('vanFrame'), vanImg=document.getElementById('vanImg'), vanCap=document.getElementById('vanCap');
+  var road=document.getElementById('how'), fill=document.getElementById('roadFill'), car=document.getElementById('car'), stops=document.querySelectorAll('.stop');
+  var wide=window.matchMedia('(min-width: 901px)');
+
+  function clamp(v){return v<0?0:v>1?1:v;}
+  function progress(el){var r=el.getBoundingClientRect();var t=r.height-window.innerHeight;return t>0?clamp(-r.top/t):(r.top<0?1:0);}
+
+  function update(){
+    var y=window.scrollY;
+    nav.classList.toggle('solid', y>40);
+    if(reduce){ return; }
+
+    // hero parallax
+    var hp=clamp(y/hero.offsetHeight);
+    heroBg.style.transform='translateY('+(hp*120)+'px) scale('+(1+hp*0.12)+')';
+    heroC.style.opacity=String(1-hp*1.3);
+    heroC.style.transform='translateY('+(-hp*70)+'px)';
+    heroC.style.filter='blur('+(hp*6)+'px)';
+
+    // words light up
+    var wp=progress(wordsSec);
+    var lit=Math.floor(wp*1.15*words.length);
+    for(var i=0;i<words.length;i++){ words[i].classList.toggle('lit', i<lit); }
+
+    // van expands
+    var vp=clamp(progress(vanSec)*1.5);
+    var e=1-Math.pow(1-vp,3);
+    var ins=(1-e);
+    vanFrame.style.clipPath='inset('+(14*ins)+'% '+(12*ins)+'% '+(14*ins)+'% '+(12*ins)+'% round '+(32*ins)+'px)';
+    vanImg.style.transform='scale('+(1.15-0.15*e)+')';
+    var cp=clamp((progress(vanSec)-0.55)/0.25);
+    vanCap.style.opacity=String(cp);
+    vanCap.style.transform='translateY('+((1-cp)*24)+'px)';
+
+    // road steps
+    if(wide.matches){
+      var rp=progress(road);
+      fill.style.width=(rp*100)+'%';
+      car.style.left=(rp*100)+'%';
+      var cur=Math.min(stops.length-1, Math.floor(rp*stops.length*0.999));
+      for(var j=0;j<stops.length;j++){ stops[j].classList.toggle('on', j<=cur); stops[j].classList.toggle('cur', j===cur); }
+    } else {
+      for(var k=0;k<stops.length;k++){ stops[k].classList.add('on'); stops[k].classList.remove('cur'); }
+    }
+  }
+
+  if(reduce){ for(var i=0;i<words.length;i++) words[i].classList.add('lit'); stops.forEach?stops.forEach(function(s){s.classList.add('on');}):0; }
+
+  var ticking=false;
+  function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(function(){ ticking=false; update(); }); } }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  update();
+
+  // Form
+  var form=document.getElementById('applyForm'), err=document.getElementById('formErr'), done=document.getElementById('formDone');
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    if(!form.checkValidity()){ err.hidden=false; return; }
+    err.hidden=true; form.hidden=true; done.hidden=false;
+  });
+})();
+</script>
+
+</body>
+</html>
