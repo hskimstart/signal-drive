@@ -1,16 +1,10 @@
 // 병원 길잡이 화면 동작: 음성 입력 → 서버 질문 → 답 읽어 주기 → 병원/서류 카드 표시
 
+import { el, store } from './dom.js';
+import { initHealth, openHealthPanel, healthCard, getHealthForChat } from './health-ui.js';
+
 const $ = (sel) => document.querySelector(sel);
 const chat = $('#chat');
-
-const store = {
-  get(key, fallback) {
-    try { const v = localStorage.getItem(key); return v == null ? fallback : JSON.parse(v); } catch { return fallback; }
-  },
-  set(key, value) {
-    try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* 저장 못 해도 동작에는 지장 없음 */ }
-  },
-};
 
 const state = {
   history: [],
@@ -96,21 +90,6 @@ dialog.addEventListener('close', () => {
 });
 
 // ---------- 화면 그리기 ----------
-function el(tag, attrs = {}, ...children) {
-  const node = document.createElement(tag);
-  for (const [k, v] of Object.entries(attrs)) {
-    if (v == null || v === false) continue;
-    if (k === 'class') node.className = v;
-    else if (k.startsWith('on')) node.addEventListener(k.slice(2), v);
-    else node.setAttribute(k, v === true ? '' : v);
-  }
-  for (const c of children.flat()) {
-    if (c == null || c === false) continue;
-    node.append(c instanceof Node ? c : document.createTextNode(String(c)));
-  }
-  return node;
-}
-
 function scrollDown() {
   requestAnimationFrame(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }));
 }
@@ -228,6 +207,7 @@ function renderCard(card) {
   if (card.type === 'emergency') return emergencyCard();
   if (card.type === 'places') return placesCard(card);
   if (card.type === 'guide') return guideCard(card.guide);
+  if (card.type === 'health') return healthCard();
   return null;
 }
 
@@ -245,7 +225,10 @@ async function ask(text) {
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text, history: state.history, location: state.location, area: state.location ? '' : state.area }),
+      body: JSON.stringify({
+        message: text, history: state.history, location: state.location,
+        area: state.location ? '' : state.area, health: getHealthForChat(),
+      }),
     });
     const data = await res.json();
     wait.remove();
@@ -282,9 +265,11 @@ $('#text-form').addEventListener('submit', (e) => {
 });
 
 $('#quick').addEventListener('click', (e) => {
+  if (e.target.closest('[data-action="health"]')) { openHealthPanel(); return; }
   const btn = e.target.closest('button[data-ask]');
   if (btn) ask(btn.dataset.ask);
 });
+$('#health-btn').addEventListener('click', () => openHealthPanel());
 
 // ---------- 음성 인식 ----------
 const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -344,6 +329,7 @@ async function init() {
   locate();
   try {
     const cfg = await (await fetch('/api/config')).json();
+    initHealth({ photoExtract: cfg.photoExtract });
     const notes = [];
     if (!cfg.liveData) notes.push('지금은 예시 병원 데이터로 보여 드리는 시험판이에요.');
     if (!cfg.ai) notes.push('AI 안내가 꺼져 있어 기본 안내로 답해요.');

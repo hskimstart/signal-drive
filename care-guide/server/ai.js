@@ -5,6 +5,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { DEPARTMENT_NAMES, GUIDES } from './knowledge.js';
 import { searchPlacesOrClosest } from './egen.js';
 import { kstNow } from './hours.js';
+import { summarizeHealth } from '../public/health-rules.js';
 
 const MODEL = process.env.CARE_AI_MODEL || 'claude-opus-5-5';
 // 대화형 안내라 응답 속도를 우선해 low로 둔다. 답이 부족하면 medium으로 올려 보세요.
@@ -29,6 +30,13 @@ const SYSTEM = `당신은 "병원 길잡이"라는 앱의 안내원입니다. �
 - 공손한 존댓말, 쉬운 우리말을 씁니다. 어려운 의학 용어는 풀어서 말합니다.
 - 병원 이름, 거리, 오늘 진료시간처럼 꼭 필요한 것만 말하고, 자세한 목록은 화면 카드에 나온다고 알려 드립니다.
 - 찾은 결과가 없으면 솔직히 말하고 다른 방법(전화 확인, 119 상담, 다른 진료과)을 알려 드립니다.
+
+건강수첩
+- 사용자가 등록한 건강수첩(앓는 병, 드시는 약, 최근 건강검진 결과)이 질문 끝의 [앱 참고정보]에 붙어 올 수 있습니다.
+- 증상과 관련 있는 항목이 있을 때만 짧게 연결해 말합니다. 예: 어지럽다고 하시는데 검진 혈압이 높았다면 그 점을 의사에게 꼭 말씀드리라고 안내합니다.
+- 검진 수치는 "주의", "확인 필요" 같은 앱의 표시를 그대로 쓰고, 병이 있다고 단정하지 않습니다. 관련 없는 질문에는 건강수첩 내용을 꺼내지 않습니다.
+- 병원에 가실 때는 화면의 "의사 선생님께 보여 드리기"를 보여 드리라고 권할 수 있습니다.
+- 드시는 약이 있으면 진료 때 꼭 말씀드리라고 안내하되, 약을 바꾸거나 끊으라고 하지 않습니다.
 
 안전
 - 당신은 의사가 아닙니다. 병명을 단정하거나 약 용량을 정해 드리지 않습니다.
@@ -116,13 +124,14 @@ function toMessages(history, message, ctx) {
   const hh = String(Math.floor(now.minutes / 60)).padStart(2, '0');
   const mm = String(now.minutes % 60).padStart(2, '0');
   const days = ['', '월', '화', '수', '목', '금', '토', '일'];
-  const note = `[앱 참고정보 — 지금 ${now.ymd}(${days[now.weekday]}${now.dayIndex === 8 ? ', 공휴일' : ''}) ${hh}:${mm}, 위치 정보 ${ctx.location ? '있음' : '없음'}]`;
+  const healthNote = ctx.health ? summarizeHealth(ctx.health) : '';
+  const note = `[앱 참고정보 — 지금 ${now.ymd}(${days[now.weekday]}${now.dayIndex === 8 ? ', 공휴일' : ''}) ${hh}:${mm}, 위치 정보 ${ctx.location ? '있음' : '없음'}${healthNote ? `, 건강수첩: ${healthNote}` : ', 건강수첩 없음'}]`;
   msgs.push({ role: 'user', content: `${message}\n\n${note}` });
   return msgs;
 }
 
-export async function askClaude({ message, history = [], location = null }) {
-  const ctx = { location, cards: [] };
+export async function askClaude({ message, history = [], location = null, health = null }) {
+  const ctx = { location, health, cards: [] };
   const messages = toMessages(history, message, ctx);
 
   for (let round = 0; round <= MAX_TOOL_ROUNDS; round++) {

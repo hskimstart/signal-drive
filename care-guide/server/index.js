@@ -5,9 +5,22 @@ import { answer } from './assistant.js';
 import { searchPlaces, isLive } from './egen.js';
 import { isAIEnabled } from './ai.js';
 import { GUIDES } from './knowledge.js';
+import { sanitizeHealth, extractCheckup } from './health.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
+
+// 검진 결과지 사진은 크기가 커서 다른 요청보다 먼저, 따로 받는다. 사진은 저장하지 않는다.
+app.post('/api/checkup/extract', express.json({ limit: '8mb' }), async (req, res) => {
+  if (!isAIEnabled()) return res.status(503).json({ error: '사진 읽기는 AI가 켜져 있을 때만 돼요. 직접 입력해 주세요.' });
+  try {
+    res.json(await extractCheckup(req.body?.image));
+  } catch (err) {
+    console.error('[extract]', err.message);
+    res.status(err.status || 502).json({ error: err.status ? err.message : '사진을 읽지 못했어요. 직접 입력해 주세요.' });
+  }
+});
+
 app.use(express.json({ limit: '64kb' }));
 app.use(express.static(path.join(here, '..', 'public')));
 
@@ -20,7 +33,7 @@ function parseLocation(src) {
 }
 
 app.get('/api/config', (_req, res) => {
-  res.json({ ai: isAIEnabled(), liveData: isLive() });
+  res.json({ ai: isAIEnabled(), liveData: isLive(), photoExtract: isAIEnabled() });
 });
 
 app.post('/api/chat', async (req, res) => {
@@ -32,6 +45,7 @@ app.post('/api/chat', async (req, res) => {
       history: Array.isArray(req.body.history) ? req.body.history : [],
       location: parseLocation(req.body.location),
       area: String(req.body.area || '').slice(0, 40),
+      health: sanitizeHealth(req.body.health),
     });
     res.json(out);
   } catch (err) {

@@ -20,7 +20,8 @@
     병원 길잡이
   </h1>
   <div class="top-actions">
-    <button id="font-btn" class="chip" type="button" aria-label="글자 크기 바꾸기">글자 <b>가+</b></button>
+    <button id="font-btn" class="chip" type="button" aria-label="글자 크기 바꾸기"><b>가+</b></button>
+    <button id="health-btn" class="chip" type="button">건강수첩</button>
     <a class="call119" href="tel:119" aria-label="119에 전화하기">119</a>
   </div>
 </header>
@@ -36,6 +37,7 @@
     <p class="welcome-title">어디가 불편하세요?</p>
     <p class="welcome-sub">아래 <b>마이크</b>를 누르고 편하게 말씀하세요.<br>예) "무릎이 아파요", "지금 문 연 약국 알려줘"</p>
     <div class="quick" id="quick">
+      <button type="button" class="quick-wide" data-action="health"><span class="qi qi-note"></span><span>내 건강수첩<small>건강검진 결과를 넣어 두면 안내할 때 참고해요</small></span></button>
       <button type="button" data-ask="지금 문 연 병원 알려줘"><span class="qi qi-hosp"></span>문 연 병원</button>
       <button type="button" data-ask="지금 문 연 약국 알려줘"><span class="qi qi-pharm"></span>문 연 약국</button>
       <button type="button" data-ask="가까운 응급실 알려줘"><span class="qi qi-er"></span>응급실</button>
@@ -73,6 +75,9 @@
     </div>
   </form>
 </dialog>
+
+<dialog id="health-dialog" class="sheet" aria-label="내 건강수첩"></dialog>
+<input id="photo-input" type="file" accept="image/*" capture="environment" hidden>
 
 <script src="app.js" type="module"></script>
 </body>
