@@ -12,7 +12,7 @@
 ## 바로 실행해 보기
 
 ```bash
-cd care-guide
+cd applications/care-guide
 npm install
 npm start          # http://localhost:3000
 npm test           # 진료시간 계산·증상 분류·응답 파싱 테스트
@@ -57,7 +57,7 @@ npm test           # 진료시간 계산·증상 분류·응답 파싱 테스트
 ## 구조
 
 ```
-care-guide/
+applications/care-guide/
 ├─ public/              화면 (HTML/CSS/JS, 설치형 웹앱)
 │  ├─ index.html        큰 글씨·큰 버튼, 119 버튼 상시 노출
 │  ├─ app.js            음성 인식, 소리로 읽기, 카드 그리기, 가족에게 공유
